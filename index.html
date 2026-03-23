@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Summer Program — Comment Submission</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1a1a2e;
+      --ink-soft: #4a4a68;
+      --ink-muted: #8888a4;
+      --surface: #faf9f7;
+      --surface-warm: #f4f1ec;
+      --surface-card: #ffffff;
+      --border: #e8e5df;
+      --border-focus: #c4a882;
+      --accent: #8b6f47;
+      --accent-deep: #6b5535;
+      --accent-light: #d4c4a8;
+      --accent-glow: rgba(139, 111, 71, 0.08);
+      --success: #4a7c59;
+      --success-bg: #eef5f0;
+      --error: #a63d40;
+      --error-bg: #fdf0f0;
+      --info: #4a6fa5;
+      --info-bg: #eef3fa;
+      --warning: #b8860b;
+      --warning-bg: #fdf8ec;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow-sm: 0 1px 3px rgba(26,26,46,0.06);
+      --shadow-md: 0 4px 16px rgba(26,26,46,0.08);
+      --shadow-lg: 0 8px 32px rgba(26,26,46,0.10);
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body: 'DM Sans', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--surface);
+      color: var(--ink);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---- Texture background ---- */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 0%, rgba(139,111,71,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 100%, rgba(139,111,71,0.03) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ---- Top bar ---- */
+    .topbar {
+      background: var(--ink);
+      color: var(--surface);
+      padding: 10px 24px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar .program-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topbar .program-badge::before {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .topbar .status-pill {
+      font-size: 11px;
+      background: rgba(255,255,255,0.1);
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ---- Layout ---- */
+    .page-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ---- Hero header ---- */
+    .hero {
+      margin-bottom: 40px;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: 38px;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .hero .subtitle {
+      font-size: 16px;
+      color: var(--ink-soft);
+      max-width: 520px;
+      line-height: 1.6;
+    }
+
+    .hero .divider {
+      width: 48px;
+      height: 2px;
+      background: var(--accent);
+      margin-top: 20px;
+      border-radius: 1px;
+    }
+
+    /* ---- Progress indicator ---- */
+    .progress-bar {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 36px;
+      padding: 0 4px;
+    }
+
+    .progress-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      position: relative;
+    }
+
+    .progress-step .step-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--surface-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-muted);
+      flex-shrink: 0;
+      transition: all 0.4s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .progress-step.active .step-dot {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: white;
+    }
+
+    .progress-step.completed .step-dot {
+      border-color: var(--success);
+      background: var(--success);
+      color: white;
+    }
+
+    .progress-step .step-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-muted);
+      transition: color 0.3s;
+      white-space: nowrap;
+    }
+
+    .progress-step.active .step-label,
+    .progress-step.completed .step-label {
+      color: var(--ink);
+    }
+
+    .progress-line {
+      flex: 1;
+      height: 2px;
+      background: var(--border);
+      margin: 0 8px;
+      position: relative;
+      min-width: 20px;
+    }
+
+    .progress-line.filled {
+      background: var(--accent);
+    }
+
+    /* ---- Cards ---- */
+    .card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.3s;
+      animation: cardIn 0.4s ease both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-label {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .card-sublabel {
+      font-size: 14px;
+      color: var(--ink-soft);
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .required-dot {
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      background: var(--error);
+      border-radius: 50%;
+      margin-left: 6px;
+      vertical-align: super;
+    }
+
+    /* ---- Form elements ---- */
+    select {
+      width: 100%;
+      padding: 14px 16px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--surface-card);
+      color: var(--ink);
+      cursor: pointer;
+      transition: border-color 0.25s, box-shadow 0.25s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234a4a68' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 6l3.5 4 3.5-4z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    textarea {
+      width: 100%;
+      padding: 14px 16px;
+      font-family: var(--font-body);
+      font-size: 14.5px;
+      line-height: 1.7;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--surface-card);
+      color: var(--ink);
+      resize: vertical;
+      transition: border-color 0.25s, box-shadow 0.25s;
+      min-height: 120px;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    textarea::placeholder {
+      color: var(--ink-muted);
+      font-style: italic;
+    }
+
+    /* ---- Character / word counter ---- */
+    .textarea-wrap {
+      position: relative;
+    }
+
+    .word-count {
+      position: absolute;
+      bottom: 10px;
+      right: 14px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--ink-muted);
+      pointer-events: none;
+      background: var(--surface-card);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* ---- Student blocks ---- */
+    .student-block {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 14px;
+      overflow: hidden;
+      animation: cardIn 0.4s ease both;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .student-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-warm);
+    }
+
+    .student-header .student-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--ink);
+    }
+
+    .student-header .student-number {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink-muted);
+      background: var(--surface-card);
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .student-block .student-body {
+      padding: 20px 24px;
+    }
+
+    .student-block textarea {
+      border-color: transparent;
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+    }
+
+    .student-block textarea:focus {
+      border-color: var(--accent);
+      background: var(--surface-card);
+    }
+
+    .student-block.has-content .student-header {
+      border-left: 3px solid var(--success);
+    }
+
+    /* ---- Instruction panel ---- */
+    .instruction-panel {
+      background: var(--surface-warm);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      animation: cardIn 0.4s ease both;
+    }
+
+    .instruction-panel strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .instruction-panel p {
+      font-size: 14px;
+      color: var(--ink-soft);
+      line-height: 1.7;
+    }
+
+    .instruction-panel ol {
+      margin: 10px 0 0 20px;
+      font-size: 14px;
+      color: var(--ink-soft);
+      line-height: 1.8;
+    }
+
+    /* ---- Banners ---- */
+    .banner {
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: cardIn 0.3s ease both;
+    }
+
+    .banner .banner-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .banner.locked {
+      background: var(--warning-bg);
+      border: 1px solid #e6d5a0;
+      color: #7a6520;
+    }
+
+    .banner.resubmit {
+      background: var(--success-bg);
+      border: 1px solid #b8d4c0;
+      color: var(--success);
+    }
+
+    /* ---- Completion tracker (mini) ---- */
+    .completion-bar {
+      background: var(--surface-warm);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 42px;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+      animation: cardIn 0.3s ease both;
+    }
+
+    .completion-bar .bar-track {
+      flex: 1;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .completion-bar .bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .completion-bar .bar-fill.complete {
+      background: var(--success);
+    }
+
+    .completion-bar .bar-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      white-space: nowrap;
+      font-family: var(--font-mono);
+    }
+
+    /* ---- Submit section ---- */
+    .submit-section {
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      animation: cardIn 0.4s ease both;
+    }
+
+    .submit-btn {
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      padding: 14px 40px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: var(--ink);
+      color: var(--surface);
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background: var(--accent-deep);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .submit-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .submit-btn:disabled {
+      background: var(--ink-muted);
+      cursor: not-allowed;
+    }
+
+    /* ---- Status message ---- */
+    .status-msg {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .status-msg.success { color: var(--success); }
+    .status-msg.error { color: var(--error); }
+    .status-msg.info { color: var(--info); }
+
+    /* ---- Spinner ---- */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ---- Success screen ---- */
+    .success-screen {
+      text-align: center;
+      padding: 60px 24px;
+      animation: successIn 0.6s ease both;
+    }
+
+    @keyframes successIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .success-screen .check-circle {
+      width: 72px;
+      height: 72px;
+      background: var(--success-bg);
+      border: 2px solid var(--success);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+    }
+
+    .success-screen .check-circle svg {
+      width: 32px;
+      height: 32px;
+      stroke: var(--success);
+    }
+
+    .success-screen h2 {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+
+    .success-screen p {
+      font-size: 15px;
+      color: var(--ink-soft);
+      margin-bottom: 28px;
+    }
+
+    .success-screen .reset-btn {
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 28px;
+      background: transparent;
+      border: 1.5px solid var(--ink);
+      color: var(--ink);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .success-screen .reset-btn:hover {
+      background: var(--ink);
+      color: var(--surface);
+    }
+
+    /* ---- Utility ---- */
+    .hidden { display: none !important; }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 600px) {
+      .page-wrap { padding: 24px 16px 60px; }
+      .hero h1 { font-size: 28px; }
+      .card { padding: 20px; }
+      .student-header { padding: 12px 16px; }
+      .student-block .student-body { padding: 16px; }
+      .progress-step .step-label { font-size: 11px; }
+      .progress-step .step-dot { width: 28px; height: 28px; font-size: 12px; }
+      .completion-bar { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== TOP BAR ===== -->
+<div class="topbar">
+  <div class="program-badge">Lawrenceville Summer Program</div>
+  <div class="status-pill" id="topbarStatus">Comment Portal</div>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="page-wrap">
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>Final Comment Submission</h1>
+    <p class="subtitle">Select your name and course below to write a course summary and individualized student comments.</p>
+    <div class="divider"></div>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="progress-bar" id="progressBar">
+    <div class="progress-step active" id="step1">
+      <div class="step-dot">1</div>
+      <div class="step-label">Teacher</div>
+    </div>
+    <div class="progress-line" id="line1"></div>
+    <div class="progress-step" id="step2">
+      <div class="step-dot">2</div>
+      <div class="step-label">Course</div>
+    </div>
+    <div class="progress-line" id="line2"></div>
+    <div class="progress-step" id="step3">
+      <div class="step-dot">3</div>
+      <div class="step-label">Comments</div>
+    </div>
+    <div class="progress-line" id="line3"></div>
+    <div class="progress-step" id="step4">
+      <div class="step-dot">4</div>
+      <div class="step-label">Submit</div>
+    </div>
+  </div>
+
+  <!-- ===== FORM ===== -->
+  <div id="mainForm">
+
+    <!-- Teacher Selection -->
+    <div class="card">
+      <div class="card-label">Your Name<span class="required-dot"></span></div>
+      <div class="card-sublabel">Select your name from the roster.</div>
+      <select id="teacher" onchange="handleTeacherChange()">
+        <option value="">Choose your name…</option>
+      </select>
+    </div>
+
+    <!-- Course Selection -->
+    <div class="card hidden" id="courseCard">
+      <div class="card-label">Course<span class="required-dot"></span></div>
+      <div class="card-sublabel">Select the course you are submitting comments for.</div>
+      <select id="course" onchange="handleCourseChange()">
+        <option value="">Choose a course…</option>
+      </select>
+    </div>
+
+    <!-- Locked banner -->
+    <div id="lockedBanner" class="banner locked hidden">
+      <span class="banner-icon">🔒</span>
+      <span>You have already submitted comments for this course. Contact your administrator to unlock resubmission.</span>
+    </div>
+
+    <!-- Resubmit banner -->
+    <div id="resubmitBanner" class="banner resubmit hidden">
+      <span class="banner-icon">✏️</span>
+      <span>Your previous comments have been loaded. Make any changes, then resubmit.</span>
+    </div>
+
+    <!-- Course Description -->
+    <div class="card hidden" id="descriptionCard">
+      <div class="card-label">Course Summary<span class="required-dot"></span></div>
+      <div class="card-sublabel">
+        Write a single paragraph covering your course's subject matter, content, skill development,
+        learning outcomes, and general experience. This will appear as the opening paragraph in every student's final comment.
+      </div>
+      <div class="textarea-wrap">
+        <textarea id="courseDescription" rows="5" placeholder="Write your course summary here…" oninput="updateWordCount(this, 'descWordCount')"></textarea>
+        <span class="word-count" id="descWordCount">0 words</span>
+      </div>
+    </div>
+
+    <!-- Instruction panel -->
+    <div id="instructionBox" class="instruction-panel hidden">
+      <strong>Individualized Comments</strong>
+      <p>Compose at least three sentences for each student:</p>
+      <ol>
+        <li>A specific observation highlighting strengths, growth, or achievements.</li>
+        <li>Constructive feedback identifying an area for continued development.</li>
+        <li>Encouraging remarks conveying confidence in future success.</li>
+      </ol>
+    </div>
+
+    <!-- Completion tracker bar -->
+    <div id="completionBar" class="completion-bar hidden">
+      <span class="bar-label" id="completionLabel">0 / 0</span>
+      <div class="bar-track">
+        <div class="bar-fill" id="completionFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Student comment fields (generated dynamically) -->
+    <div id="studentFields"></div>
+
+    <!-- Submit -->
+    <div class="submit-section hidden" id="submitSection">
+      <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">Submit</button>
+      <span id="statusMsg" class="status-msg"></span>
+    </div>
+
+  </div>
+
+  <!-- ===== SUCCESS SCREEN ===== -->
+  <div id="successScreen" class="card success-screen hidden">
+    <div class="check-circle">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
+    <h2 id="successTitle">Comments Submitted</h2>
+    <p id="successDetail">Your comments have been recorded successfully.</p>
+    <button class="reset-btn" onclick="resetForm()">Submit for another course</button>
+  </div>
+
+</div>
+
+<script>
+  // =====================================================
+  // CONFIGURATION — Set your deployed Apps Script URL here
+  // =====================================================
+  var API_BASE = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+  // State
+  var currentStudents = [];
+  var isSubmitting = false;
+  var isResubmission = false;
+
+  // ---- API Helper ----
+  function apiCall(action, params, callback, errorCallback) {
+    var url = API_BASE + '?action=' + encodeURIComponent(action);
+    if (params) {
+      for (var key in params) {
+        url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+      }
+    }
+
+    fetch(url)
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data.error) {
+          if (errorCallback) errorCallback(data.error);
+          else showStatus(data.error, 'error');
+        } else {
+          callback(data);
+        }
+      })
+      .catch(function(err) {
+        var msg = 'Network error. Please check your connection and try again.';
+        if (errorCallback) errorCallback(msg);
+        else showStatus(msg, 'error');
+      });
+  }
+
+  function apiPost(action, payload, callback, errorCallback) {
+    fetch(API_BASE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: action, payload: payload })
+    })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data.error) {
+          if (errorCallback) errorCallback(data.error);
+          else showStatus(data.error, 'error');
+        } else {
+          callback(data);
+        }
+      })
+      .catch(function(err) {
+        var msg = 'Network error. Please try again.';
+        if (errorCallback) errorCallback(msg);
+        else showStatus(msg, 'error');
+      });
+  }
+
+  // ---- Initialization ----
+  document.addEventListener('DOMContentLoaded', function() {
+    apiCall('getTeachers', null, function(data) {
+      var select = document.getElementById('teacher');
+      data.teachers.forEach(function(name) {
+        var opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        select.appendChild(opt);
+      });
+    }, function(err) {
+      showStatus('Failed to load teacher list. Please refresh.', 'error');
+    });
+  });
+
+  // ---- Progress bar ----
+  function setProgress(step) {
+    for (var i = 1; i <= 4; i++) {
+      var el = document.getElementById('step' + i);
+      var line = document.getElementById('line' + (i - 1));
+      el.classList.remove('active', 'completed');
+      if (i < step) {
+        el.classList.add('completed');
+        if (line) line.classList.add('filled');
+      } else if (i === step) {
+        el.classList.add('active');
+        if (line) line.classList.add('filled');
+      } else {
+        if (line) line.classList.remove('filled');
+      }
+    }
+  }
+
+  // ---- Teacher selected ----
+  function handleTeacherChange() {
+    var teacher = document.getElementById('teacher').value;
+    var courseCard = document.getElementById('courseCard');
+    var courseSelect = document.getElementById('course');
+    courseSelect.innerHTML = '<option value="">Choose a course…</option>';
+    hideCommentFields();
+
+    if (!teacher) {
+      courseCard.classList.add('hidden');
+      setProgress(1);
+      return;
+    }
+
+    courseCard.classList.remove('hidden');
+    setProgress(2);
+
+    apiCall('getCourses', { teacher: teacher }, function(data) {
+      data.courses.forEach(function(c) {
+        var opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
+        courseSelect.appendChild(opt);
+      });
+    }, function(err) {
+      showStatus('Failed to load courses.', 'error');
+    });
+  }
+
+  // ---- Course selected ----
+  function handleCourseChange() {
+    var teacher = document.getElementById('teacher').value;
+    var course = document.getElementById('course').value;
+    hideCommentFields();
+
+    if (!course) {
+      setProgress(2);
+      return;
+    }
+
+    showStatus('<span class="spinner"></span> Checking submission status…', 'info');
+
+    apiCall('checkStatus', { teacher: teacher, course: course }, function(data) {
+      clearStatus();
+
+      if (data.submitted && !data.resubmitAllowed) {
+        document.getElementById('lockedBanner').classList.remove('hidden');
+        setProgress(2);
+        return;
+      }
+
+      if (data.submitted && data.resubmitAllowed) {
+        isResubmission = true;
+        document.getElementById('resubmitBanner').classList.remove('hidden');
+        loadStudentFieldsThenPrefill(teacher, course);
+      } else {
+        isResubmission = false;
+        loadStudentFields(course);
+      }
+
+      setProgress(3);
+    }, function(err) {
+      showStatus('Error checking status.', 'error');
+    });
+  }
+
+  // ---- Load student fields (fresh) ----
+  function loadStudentFields(course) {
+    apiCall('getStudents', { course: course }, function(data) {
+      currentStudents = data.students;
+      buildStudentFields(data.students, {});
+    }, function(err) {
+      showStatus('Failed to load students.', 'error');
+    });
+  }
+
+  // ---- Load student fields + prefill (resubmission) ----
+  function loadStudentFieldsThenPrefill(teacher, course) {
+    apiCall('getStudents', { course: course }, function(data) {
+      currentStudents = data.students;
+      apiCall('getPrevious', { teacher: teacher, course: course }, function(prevData) {
+        if (prevData.description) {
+          document.getElementById('courseDescription').value = prevData.description;
+          updateWordCount(document.getElementById('courseDescription'), 'descWordCount');
+        }
+        buildStudentFields(data.students, prevData.comments || {});
+      }, function() {
+        buildStudentFields(data.students, {});
+      });
+    }, function(err) {
+      showStatus('Failed to load students.', 'error');
+    });
+  }
+
+  // ---- Build student comment cards ----
+  function buildStudentFields(students, prefillComments) {
+    document.getElementById('descriptionCard').classList.remove('hidden');
+    document.getElementById('instructionBox').classList.remove('hidden');
+    document.getElementById('completionBar').classList.remove('hidden');
+    document.getElementById('submitSection').classList.remove('hidden');
+
+    var container = document.getElementById('studentFields');
+    container.innerHTML = '';
+
+    for (var i = 0; i < students.length; i++) {
+      var name = students[i];
+      var prev = prefillComments[name] || '';
+      var hasContent = prev.trim().length > 0;
+
+      var block = document.createElement('div');
+      block.className = 'student-block' + (hasContent ? ' has-content' : '');
+      block.style.animationDelay = (i * 0.05) + 's';
+      block.innerHTML =
+        '<div class="student-header">' +
+          '<span class="student-name">' + escapeHtml(name) + '</span>' +
+          '<span class="student-number">' + (i + 1) + ' of ' + students.length + '</span>' +
+        '</div>' +
+        '<div class="student-body">' +
+          '<div class="textarea-wrap">' +
+            '<textarea rows="5" data-student="' + escapeHtml(name) + '" data-index="' + i + '" ' +
+            'placeholder="Write your comment for ' + escapeHtml(name) + '…" ' +
+            'oninput="handleStudentInput(this)">' + escapeHtml(prev) + '</textarea>' +
+            '<span class="word-count" id="wc' + i + '">' + countWords(prev) + ' words</span>' +
+          '</div>' +
+        '</div>';
+      container.appendChild(block);
+    }
+
+    updateCompletionBar();
+
+    var btn = document.getElementById('submitBtn');
+    btn.textContent = isResubmission ? 'Resubmit' : 'Submit';
+  }
+
+  // ---- Handle student textarea input ----
+  function handleStudentInput(el) {
+    var idx = el.getAttribute('data-index');
+    var wc = document.getElementById('wc' + idx);
+    wc.textContent = countWords(el.value) + ' words';
+
+    var block = el.closest('.student-block');
+    if (el.value.trim().length > 0) {
+      block.classList.add('has-content');
+    } else {
+      block.classList.remove('has-content');
+    }
+
+    updateCompletionBar();
+  }
+
+  // ---- Completion bar ----
+  function updateCompletionBar() {
+    var boxes = document.querySelectorAll('textarea[data-student]');
+    var total = boxes.length;
+    var done = 0;
+    for (var i = 0; i < boxes.length; i++) {
+      if (boxes[i].value.trim().length > 0) done++;
+    }
+    var pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    document.getElementById('completionLabel').textContent = done + ' / ' + total;
+    var fill = document.getElementById('completionFill');
+    fill.style.width = pct + '%';
+    if (pct === 100) fill.classList.add('complete');
+    else fill.classList.remove('complete');
+  }
+
+  // ---- Hide comment fields ----
+  function hideCommentFields() {
+    document.getElementById('descriptionCard').classList.add('hidden');
+    document.getElementById('instructionBox').classList.add('hidden');
+    document.getElementById('completionBar').classList.add('hidden');
+    document.getElementById('studentFields').innerHTML = '';
+    document.getElementById('submitSection').classList.add('hidden');
+    document.getElementById('lockedBanner').classList.add('hidden');
+    document.getElementById('resubmitBanner').classList.add('hidden');
+    document.getElementById('courseDescription').value = '';
+    isResubmission = false;
+    clearStatus();
+  }
+
+  // ---- Submit ----
+  function handleSubmit() {
+    if (isSubmitting) return;
+
+    var teacher = document.getElementById('teacher').value;
+    var course = document.getElementById('course').value;
+    var description = document.getElementById('courseDescription').value.trim();
+
+    if (!description) {
+      showStatus('Please write a course summary before submitting.', 'error');
+      return;
+    }
+
+    var commentBoxes = document.querySelectorAll('textarea[data-student]');
+    var comments = [];
+    var missing = [];
+
+    for (var i = 0; i < commentBoxes.length; i++) {
+      var student = commentBoxes[i].getAttribute('data-student');
+      var comment = commentBoxes[i].value.trim();
+      if (!comment) missing.push(student);
+      comments.push({ student: student, comment: comment });
+    }
+
+    if (missing.length > 0) {
+      showStatus('Missing comments for: ' + missing.join(', '), 'error');
+      return;
+    }
+
+    isSubmitting = true;
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+    showStatus('<span class="spinner"></span> Saving comments…', 'info');
+    setProgress(4);
+
+    apiPost('submit', {
+      teacher: teacher,
+      course: course,
+      description: description,
+      comments: comments
+    }, function(result) {
+      isSubmitting = false;
+      if (result.success) {
+        document.getElementById('mainForm').classList.add('hidden');
+        document.getElementById('progressBar').classList.add('hidden');
+        document.getElementById('successScreen').classList.remove('hidden');
+        document.getElementById('successTitle').textContent = isResubmission ? 'Comments Updated' : 'Comments Submitted';
+        document.getElementById('successDetail').textContent = result.message;
+      } else {
+        btn.disabled = false;
+        btn.textContent = isResubmission ? 'Resubmit' : 'Submit';
+        showStatus(result.message, 'error');
+        setProgress(3);
+      }
+    }, function(err) {
+      isSubmitting = false;
+      btn.disabled = false;
+      btn.textContent = isResubmission ? 'Resubmit' : 'Submit';
+      showStatus('Something went wrong. Please try again.', 'error');
+      setProgress(3);
+    });
+  }
+
+  // ---- Reset ----
+  function resetForm() {
+    document.getElementById('mainForm').classList.remove('hidden');
+    document.getElementById('progressBar').classList.remove('hidden');
+    document.getElementById('successScreen').classList.add('hidden');
+    document.getElementById('teacher').value = '';
+    document.getElementById('courseCard').classList.add('hidden');
+    document.getElementById('course').innerHTML = '<option value="">Choose a course…</option>';
+    hideCommentFields();
+    document.getElementById('submitBtn').disabled = false;
+    document.getElementById('submitBtn').textContent = 'Submit';
+    setProgress(1);
+  }
+
+  // ---- Helpers ----
+  function escapeHtml(text) {
+    if (!text) return '';
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(text));
+    return div.innerHTML;
+  }
+
+  function countWords(text) {
+    if (!text || !text.trim()) return 0;
+    return text.trim().split(/\s+/).length;
+  }
+
+  function updateWordCount(el, targetId) {
+    document.getElementById(targetId).textContent = countWords(el.value) + ' words';
+  }
+
+  function showStatus(msg, type) {
+    var el = document.getElementById('statusMsg');
+    el.innerHTML = msg;
+    el.className = 'status-msg ' + type;
+  }
+
+  function clearStatus() {
+    var el = document.getElementById('statusMsg');
+    el.innerHTML = '';
+    el.className = 'status-msg';
+  }
+</script>
+
+</body>
+</html>
